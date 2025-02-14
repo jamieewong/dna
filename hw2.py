@@ -1,5 +1,6 @@
 import random
 from Bio import Entrez, SeqIO
+import matplotlib.pyplot as plt
 
 def gen_sequence():
     nucleotides = ['A', 'T', 'C', 'G']
@@ -10,30 +11,30 @@ def gen_sequence():
     return seq
 
 def edit_distance(seq1, seq2):
-    i = len(seq1)
-    j = len(seq2)
+    m = len(seq1)
+    n = len(seq2)
     #initialize empty matrix
     mat = []
-    for x in range(i+1):
+    for i in range(m+1):
         row = []
-        for y in range(j+1):
+        for j in range(n+1):
             row.append(0)
         mat.append(row)
     #fill in first row and column
-    for y in range(j+1):
-        mat[0][y] = y
-    for x in range(i+1):
-        mat[x][0] = x
+    for j in range(n+1):
+        mat[0][j] = j
+    for i in range(m+1):
+        mat[i][0] = i
     #fill in edit distances row by row, left to right
-    for x in range(1,i+1):
-        for y in range(1,j+1):
-            edit_cost = (seq1[x-1] != seq2[y-1]) #0 if match, 1 if mismatch
-            a = mat[x-1][y] + 1 #up
-            b = mat[x][y-1] + 1 #left
-            c = mat[x-1][y-1] + edit_cost #diag
-            mat[x][y] = min(a, b, c)
+    for i in range(1,m+1):
+        for j in range(1,n+1):
+            edit_cost = (seq1[i-1] != seq2[j-1]) #0 if match, 1 if mismatch
+            up = mat[i-1][j] + 1
+            left = mat[i][j-1] + 1
+            diag = mat[i-1][j-1] + edit_cost
+            mat[i][j] = min(up, left, diag)
     #return edit distance for entire sequence
-    dist = mat[i-1][j-1]
+    dist = mat[m][n]
     return dist
 
 #generate 20 random sequences and put them in a list
@@ -46,3 +47,26 @@ distances = []
 for i in range(20):
     for j in range(i+1,20):
         distances.append(edit_distance(seq_list[i], seq_list[j]))
+
+#create histogram of edit distances between all random sequences
+plt.hist(distances)
+plt.xlabel('Edit Distance')
+plt.ylabel('Frequency')
+plt.title('Distribution of Edit Distance Between Random Sequences')
+plt.show()
+
+#real data
+species_data = {
+    'German_Neanderthal': 'AF011222',
+    'Russian_Neanderthal': 'AF254446',
+    'European_Human': 'X90314',
+    'Mountain_Gorilla_Rwanda': 'AF089820',
+    'Chimp_Troglodytes': 'AF176766',
+    'Puti_Orangutan': 'AF451972',
+    'Jari_Orangutan': 'AF451964',
+    'Western_Lowland_Gorilla': 'AY079510',
+    'Eastern_Lowland_Gorilla': 'AF050738',
+    'Chimp_Schweinfurthii': 'AF176722',
+    'Chimp_Vellerosus': 'AF315498',
+    'Chimp_Verus': 'AF176731'
+}
