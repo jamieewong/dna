@@ -1,10 +1,11 @@
 import random
-from Bio import Entrez, SeqIO
+from Bio import SeqIO
 import matplotlib.pyplot as plt
 
 def gen_sequence():
     nucleotides = ['A', 'T', 'C', 'G']
     seq = ''
+    #randomly generate a sequence of 400 nucleotides
     for i in range(400):
         ind = random.randint(0,3)
         seq += nucleotides[ind]
@@ -13,7 +14,7 @@ def gen_sequence():
 def edit_distance(seq1, seq2):
     m = len(seq1)
     n = len(seq2)
-    #initialize empty matrix
+    #initialize an (m+1)x(n+1) matrix of zeros
     mat = []
     for i in range(m+1):
         row = []
@@ -37,23 +38,33 @@ def edit_distance(seq1, seq2):
     dist = mat[m][n]
     return dist
 
-#generate 20 random sequences and put them in a list
-seq_list = []
-for i in range(20):
-    seq_list.append(gen_sequence())
+#compare each sequence to all other sequences in the given list and record results
+def compare(sequences):
+    n = len(sequences)
+    distances = []
+    for i in range(n):
+        for j in range(i+1,n):
+            distances.append(edit_distance(sequences[i], sequences[j]))
+    return distances
 
-#compare each random sequence to all other random sequences and record results
-distances = []
+#generate histogram
+def hist(data, xlab, ylab, title):
+    plt.hist(data)
+    plt.xlabel(xlab)
+    plt.ylabel(ylab)
+    plt.title(title)
+    plt.show()
+
+#generate 20 random sequences and put them in a list
+rand_seqs = []
 for i in range(20):
-    for j in range(i+1,20):
-        distances.append(edit_distance(seq_list[i], seq_list[j]))
+    rand_seqs.append(gen_sequence())
+
+#obtain edit distances between all random sequences
+rand_dists = compare(rand_seqs)
 
 #create histogram of edit distances between all random sequences
-plt.hist(distances)
-plt.xlabel('Edit Distance')
-plt.ylabel('Frequency')
-plt.title('Distribution of Edit Distance Between Random Sequences')
-plt.show()
+hist(rand_dists, 'Edit Distance', 'Frequency', 'Distribution of Edit Distance Between Random Sequences')
 
 #real data
 species_data = {
@@ -70,3 +81,20 @@ species_data = {
     'Chimp_Vellerosus': 'AF315498',
     'Chimp_Verus': 'AF176731'
 }
+
+#extract the dna sequence from a species' FASTA file
+def fetch_sequence(file_name):
+    record = SeqIO.read(file_name, "fasta")
+    return record
+
+#extract dna sequences for each species
+real_seqs = []
+for species in species_data:
+    #construct file path
+    file_name = "/Users/jamiewong/Downloads/" + species_data[species] + ".1.fna" 
+    sequence_record = fetch_sequence(file_name)
+    real_seqs.append(sequence_record)
+
+#obtain edit distances between all species and generate a histogram of the data
+real_dists = compare(real_seqs)
+hist(real_dists, 'Edit Distance', 'Frequency', 'Distribution of Edit Distance Between Real Sequences')
