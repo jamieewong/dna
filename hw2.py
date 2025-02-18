@@ -47,12 +47,14 @@ def compare(sequences):
             distances.append(edit_distance(sequences[i], sequences[j]))
     return distances
 
-#generate histogram
-def hist(data, xlab, ylab, title):
+#generate histogram with a vertical line marking the average
+def hist(data, xlab, ylab, title, mean):
     plt.hist(data)
     plt.xlabel(xlab)
     plt.ylabel(ylab)
     plt.title(title)
+    plt.axvline(x = mean, color = 'r', linestyle = 'dashed', label = f'Average Edit Distance = {mean:.2f}')
+    plt.legend(loc = 'upper left')
     plt.show()
 
 #generate 20 random sequences and put them in a list
@@ -60,11 +62,12 @@ rand_seqs = []
 for i in range(20):
     rand_seqs.append(gen_sequence())
 
-#obtain edit distances between all random sequences
+#obtain edit distances between all random sequences and calculate the average
 rand_dists = compare(rand_seqs)
+rand_mean = sum(rand_dists)/len(rand_dists)
 
 #create histogram of edit distances between all random sequences
-hist(rand_dists, 'Edit Distance', 'Frequency', 'Distribution of Edit Distance Between Random Sequences')
+hist(rand_dists, 'Edit Distance', 'Frequency', 'Distribution of Edit Distance Between Random Sequences', rand_mean)
 
 #real data
 species_data = {
@@ -95,6 +98,7 @@ for species in species_data:
     sequence_record = fetch_sequence(file_name)
     real_seqs.append(sequence_record)
 
-#obtain edit distances between all species and generate a histogram of the data
+#obtain edit distances between all species, the average edit distance, and generate a histogram of the data
 real_dists = compare(real_seqs)
-hist(real_dists, 'Edit Distance', 'Frequency', 'Distribution of Edit Distance Between Real Sequences')
+real_mean = sum(real_dists)/len(real_dists)
+hist(real_dists, 'Edit Distance', 'Frequency', 'Distribution of Edit Distance Between Real Sequences', real_mean)
