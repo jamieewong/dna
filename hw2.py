@@ -49,13 +49,14 @@ def compare(sequences):
 
 #generate histogram with a vertical line marking the average
 def hist(data, xlab, ylab, title, mean):
-    plt.hist(data)
+    plt.hist(data, edgecolor = "black")
     plt.xlabel(xlab)
     plt.ylabel(ylab)
     plt.title(title)
     plt.axvline(x = mean, color = 'r', linestyle = 'dashed', label = f'Average Edit Distance = {mean:.2f}')
     plt.legend(loc = 'upper left')
     plt.show()
+    print(f'min: {min(data)}, max: {max(data)}')
 
 #generate 20 random sequences and put them in a list
 rand_seqs = []
@@ -67,7 +68,7 @@ rand_dists = compare(rand_seqs)
 rand_mean = sum(rand_dists)/len(rand_dists)
 
 #create histogram of edit distances between all random sequences
-hist(rand_dists, 'Edit Distance', 'Frequency', 'Distribution of Edit Distance Between Random Sequences', rand_mean)
+hist(rand_dists, 'Edit Distance', 'Frequency', 'Distribution of Edit Distance Between Randomly Generated Sequences', rand_mean)
 
 #real data
 species_data = {
