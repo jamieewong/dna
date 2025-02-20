@@ -56,7 +56,7 @@ def hist(data, xlab, ylab, title, mean):
     plt.axvline(x = mean, color = 'r', linestyle = 'dashed', label = f'Average Edit Distance = {mean:.2f}')
     plt.legend(loc = 'upper left')
     plt.show()
-    print(f'min: {min(data)}, max: {max(data)}')
+    print(f'min: {min(data)}, max: {max(data)}') #print min/max to console (avoided putting directly on graph to prevent clutter)
 
 #generate 20 random sequences and put them in a list
 rand_seqs = []
@@ -94,8 +94,9 @@ def fetch_sequence(file_name):
 #extract dna sequences for each species
 real_seqs = []
 for species in species_data:
-    #construct file path
+    #construct file path for file retrieval
     file_name = "/Users/jamiewong/Downloads/" + species_data[species] + ".1.fna" 
+    #get DNA sequence from file
     sequence_record = fetch_sequence(file_name)
     real_seqs.append(sequence_record)
 
