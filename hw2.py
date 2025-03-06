@@ -95,7 +95,7 @@ def fetch_sequence(file_name):
 real_seqs = []
 for species in species_data:
     #construct file path for file retrieval
-    file_name = "/Users/jamiewong/Downloads/" + species_data[species] + ".1.fna" 
+    file_name = "species dna/" + species_data[species] + ".1.fna" 
     #get DNA sequence from file
     sequence_record = fetch_sequence(file_name)
     real_seqs.append(sequence_record)
