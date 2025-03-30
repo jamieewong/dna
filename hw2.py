@@ -58,17 +58,18 @@ def hist(data, xlab, ylab, title, mean):
     plt.show()
     print(f'min: {min(data)}, max: {max(data)}') #print min/max to console (avoided putting directly on graph to prevent clutter)
 
-#generate 20 random sequences and put them in a list
-rand_seqs = []
-for i in range(20):
-    rand_seqs.append(gen_sequence())
+if __name__ == "main":
+    #generate 20 random sequences and put them in a list
+    rand_seqs = []
+    for i in range(20):
+        rand_seqs.append(gen_sequence())
 
-#obtain edit distances between all random sequences and calculate the average
-rand_dists = compare(rand_seqs)
-rand_mean = sum(rand_dists)/len(rand_dists)
+    #obtain edit distances between all random sequences and calculate the average
+    rand_dists = compare(rand_seqs)
+    rand_mean = sum(rand_dists)/len(rand_dists)
 
-#create histogram of edit distances between all random sequences
-hist(rand_dists, 'Edit Distance', 'Frequency', 'Distribution of Edit Distance Between Randomly Generated Sequences', rand_mean)
+    #create histogram of edit distances between all random sequences
+    hist(rand_dists, 'Edit Distance', 'Frequency', 'Distribution of Edit Distance Between Randomly Generated Sequences', rand_mean)
 
 #real data
 species_data = {
@@ -92,15 +93,19 @@ def fetch_sequence(file_name):
     return record
 
 #extract dna sequences for each species
-real_seqs = []
-for species in species_data:
-    #construct file path for file retrieval
-    file_name = "species dna/" + species_data[species] + ".1.fna" 
-    #get DNA sequence from file
-    sequence_record = fetch_sequence(file_name)
-    real_seqs.append(sequence_record)
+def get_all_sequences():
+    seqs = []
+    for species in species_data:
+        #construct file path for file retrieval
+        file_name = "species dna/" + species_data[species] + ".1.fna" 
+        #get DNA sequence from file
+        sequence_record = fetch_sequence(file_name)
+        seqs.append(sequence_record)
+    return seqs
 
-#obtain edit distances between all species, the average edit distance, and generate a histogram of the data
-real_dists = compare(real_seqs)
-real_mean = sum(real_dists)/len(real_dists)
-hist(real_dists, 'Edit Distance', 'Frequency', 'Distribution of Edit Distance Between Real Sequences', real_mean)
+if __name__ == "main":
+    #obtain edit distances between all species, the average edit distance, and generate a histogram of the data
+    real_seqs = get_all_sequences()
+    real_dists = compare(real_seqs)
+    real_mean = sum(real_dists)/len(real_dists)
+    hist(real_dists, 'Edit Distance', 'Frequency', 'Distribution of Edit Distance Between Real Sequences', real_mean)
